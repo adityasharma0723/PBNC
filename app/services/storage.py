@@ -19,6 +19,14 @@ def compute_sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def get_upload_base_dir() -> str:
+    upload_dir = settings.UPLOAD_DIR
+    if not os.path.isabs(upload_dir):
+        upload_dir = os.path.abspath(upload_dir)
+    os.makedirs(upload_dir, exist_ok=True)
+    return upload_dir
+
+
 def store_file(data: bytes, extension: str) -> tuple[str, str]:
     """Store file with a UUID name. Returns (stored_path, sha256).
 
@@ -28,7 +36,8 @@ def store_file(data: bytes, extension: str) -> tuple[str, str]:
     filename = f"{uuid.uuid4().hex}{extension}"
     subdir = filename[:2]  # Shard into subdirectories to avoid inode exhaustion
 
-    dir_path = os.path.join(settings.UPLOAD_DIR, subdir)
+    base_dir = get_upload_base_dir()
+    dir_path = os.path.join(base_dir, subdir)
     os.makedirs(dir_path, exist_ok=True)
 
     file_path = os.path.join(dir_path, filename)
@@ -42,7 +51,7 @@ def store_file(data: bytes, extension: str) -> tuple[str, str]:
 
 def get_absolute_path(stored_path: str) -> str:
     """Resolve a stored_path to its absolute filesystem path."""
-    return os.path.join(settings.UPLOAD_DIR, stored_path)
+    return os.path.join(get_upload_base_dir(), stored_path)
 
 
 def delete_file(stored_path: str) -> None:

@@ -31,7 +31,9 @@ async def get_current_user(
     if not credentials or not credentials.credentials:
         raise AppError("UNAUTHORIZED", "Missing or invalid Authorization header", 401)
 
-    token = credentials.credentials
+    token = credentials.credentials.strip()
+    if token.lower().startswith("bearer "):
+        token = token[7:].strip()
     user_id = decode_access_token(token)
     if user_id is None:
         raise AppError("UNAUTHORIZED", "Invalid or expired token", 401)

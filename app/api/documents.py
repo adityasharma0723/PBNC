@@ -11,7 +11,7 @@ All queries filter by owner_id. Accessing another user's document returns 404.
 
 import uuid
 
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Response, UploadFile
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -46,6 +46,7 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
     },
 )
 async def upload_document(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     group_id: uuid.UUID | None = Form(None),
     role: DocumentRole = Form(DocumentRole.unknown),
@@ -106,13 +107,15 @@ async def upload_document(
     await db.commit()
     await db.refresh(doc)
 
-    # Enqueue Celery task
-    try:
-        from app.workers.tasks import process_document
-        process_document.delay(str(doc.id))
-    except Exception:
-        # If Celery is unavailable, document stays queued; worker picks it up later
-        pass
+    # Enqueue processing (Celery if available, BackgroundTasks fallback for local dev)
+    from app.workers.tasks import process_document
+    if settings.DATABASE_URL.startswith("sqlite"):
+        background_tasks.add_task(process_document, str(doc.id))
+    else:
+        try:
+            process_document.apply_async(args=[str(doc.id)], retry=False)
+        except Exception:
+            background_tasks.add_task(process_document, str(doc.id))
 
     return DocumentUploadResponse(id=doc.id, status=doc.status)
 

@@ -88,8 +88,14 @@ async def validation_exception_handler(_request: Request, exc: RequestValidation
     )
 
 
-async def unhandled_exception_handler(_request: Request, _exc: Exception) -> JSONResponse:
-    """Catch-all: never leak stack traces to clients."""
+import logging
+
+logger = logging.getLogger("app.core.errors")
+
+
+async def unhandled_exception_handler(_request: Request, exc: Exception) -> JSONResponse:
+    """Catch-all: never leak stack traces to clients, but log them."""
+    logger.exception("Unhandled server exception: %s", exc)
     return JSONResponse(
         status_code=500,
         content=error_envelope("INTERNAL_ERROR", "An unexpected error occurred"),
