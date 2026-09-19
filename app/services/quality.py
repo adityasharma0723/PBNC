@@ -50,9 +50,9 @@ def assess_quality(image_bytes: bytes) -> QualityResult:
     flags: list[str] = []
 
     # --- Blur detection ---
-    # Apply FIND_EDGES filter (Laplacian-like) and compute variance
     edges = gray.filter(ImageFilter.FIND_EDGES)
-    edge_pixels = list(edges.getdata())
+    get_pixels = getattr(edges, "get_flattened_data", edges.getdata)
+    edge_pixels = list(get_pixels())
     n = len(edge_pixels)
     if n > 0:
         mean = sum(edge_pixels) / n
