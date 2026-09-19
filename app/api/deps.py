@@ -7,7 +7,8 @@ verifies the user exists. All downstream queries filter by owner_id.
 import uuid
 from typing import Annotated
 
-from fastapi import Depends, Header
+from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,19 +17,21 @@ from app.core.security import decode_access_token
 from app.db.session import get_async_session
 from app.models.user import User
 
+security = HTTPBearer(auto_error=False)
+
 
 async def get_db(session: AsyncSession = Depends(get_async_session)) -> AsyncSession:  # type: ignore[misc]
     yield session
 
 
 async def get_current_user(
-    authorization: Annotated[str | None, Header()] = None,
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
     db: AsyncSession = Depends(get_db),
 ) -> User:
-    if not authorization or not authorization.startswith("Bearer "):
+    if not credentials or not credentials.credentials:
         raise AppError("UNAUTHORIZED", "Missing or invalid Authorization header", 401)
 
-    token = authorization[7:]
+    token = credentials.credentials
     user_id = decode_access_token(token)
     if user_id is None:
         raise AppError("UNAUTHORIZED", "Invalid or expired token", 401)
