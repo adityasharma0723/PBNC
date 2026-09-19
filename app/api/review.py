@@ -21,7 +21,6 @@ from app.schemas.document import (
 
 router = APIRouter(tags=["Review"])
 
-
 @router.get(
     "/documents/{document_id}/review-items",
     response_model=list[ReviewItemResponse],
@@ -47,7 +46,6 @@ async def list_review_items(
     items = result.scalars().all()
     return [ReviewItemResponse.model_validate(ri) for ri in items]
 
-
 @router.patch(
     "/review-items/{review_item_id}",
     response_model=ReviewItemResponse,
@@ -59,7 +57,7 @@ async def update_review_item(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # Get review item and verify ownership through document
+
     result = await db.execute(
         select(ReviewItem).join(Document).where(
             ReviewItem.id == review_item_id,
@@ -74,7 +72,6 @@ async def update_review_item(
     await db.commit()
     await db.refresh(item)
     return ReviewItemResponse.model_validate(item)
-
 
 @router.get(
     "/documents/{document_id}/answer-key",
@@ -95,7 +92,6 @@ async def get_answer_key(
     )
     entries = result.scalars().all()
     return [AnswerKeyEntryResponse.model_validate(e) for e in entries]
-
 
 async def _verify_doc_ownership(db: AsyncSession, doc_id: uuid.UUID, owner_id: uuid.UUID):
     result = await db.execute(

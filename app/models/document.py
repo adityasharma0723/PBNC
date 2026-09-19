@@ -13,13 +13,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class DocumentRole(str, enum.Enum):
     question_paper = "question_paper"
     answer_key = "answer_key"
     mixed = "mixed"
     unknown = "unknown"
-
 
 class DocumentStatus(str, enum.Enum):
     queued = "queued"
@@ -27,7 +25,6 @@ class DocumentStatus(str, enum.Enum):
     completed = "completed"
     completed_with_warnings = "completed_with_warnings"
     failed = "failed"
-
 
 class Document(Base):
     __tablename__ = "documents"
@@ -65,7 +62,6 @@ class Document(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
-    # Relationships
     owner = relationship("User", back_populates="documents")
     group = relationship("DocumentGroup", back_populates="documents")
     pages = relationship("Page", back_populates="document", cascade="all, delete-orphan")

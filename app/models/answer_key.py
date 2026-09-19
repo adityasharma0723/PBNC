@@ -11,7 +11,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class AnswerKeyEntry(Base):
     __tablename__ = "answer_key_entries"
 
@@ -34,5 +33,4 @@ class AnswerKeyEntry(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     document = relationship("Document", back_populates="answer_key_entries")

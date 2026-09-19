@@ -14,14 +14,13 @@ import io
 import os
 import uuid
 
-import fitz  # PyMuPDF
+import fitz
 from PIL import Image
 
 from app.core.config import settings
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
-
 
 def render_pdf_pages(
     pdf_bytes: bytes,
@@ -46,16 +45,13 @@ def render_pdf_pages(
         page = doc[i]
         page_number = i + 1
 
-        # Extract text layer
         raw_text = page.get_text("text").strip()
         has_text_layer = len(raw_text) >= settings.MIN_TEXT_CHARS
 
-        # Render page to image at configured DPI
         mat = fitz.Matrix(settings.RENDER_DPI / 72, settings.RENDER_DPI / 72)
         pix = page.get_pixmap(matrix=mat)
         img_bytes = pix.tobytes("png")
 
-        # Save image with UUID name
         img_filename = f"{uuid.uuid4().hex}.png"
         img_subdir = img_filename[:2]
         img_dir = os.path.join(upload_dir, "pages", img_subdir)
@@ -77,7 +73,6 @@ def render_pdf_pages(
     doc.close()
     return pages
 
-
 def render_image_page(
     image_bytes: bytes,
     upload_dir: str | None = None,
@@ -89,11 +84,9 @@ def render_image_page(
     upload_dir = upload_dir or settings.UPLOAD_DIR
     img = Image.open(io.BytesIO(image_bytes))
 
-    # Convert to RGB if necessary (e.g., RGBA, CMYK)
     if img.mode not in ("RGB", "L"):
         img = img.convert("RGB")
 
-    # Save normalized image
     img_filename = f"{uuid.uuid4().hex}.png"
     img_subdir = img_filename[:2]
     img_dir = os.path.join(upload_dir, "pages", img_subdir)

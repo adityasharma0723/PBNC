@@ -12,12 +12,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class Severity(str, enum.Enum):
     info = "info"
     warning = "warning"
     error = "error"
-
 
 class ReviewItem(Base):
     __tablename__ = "review_items"
@@ -44,6 +42,5 @@ class ReviewItem(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     document = relationship("Document", back_populates="review_items")
     question = relationship("Question", back_populates="review_items")

@@ -19,7 +19,6 @@ from app.schemas.document import (
 
 router = APIRouter(tags=["Questions"])
 
-
 @router.get(
     "/documents/{document_id}/questions",
     response_model=QuestionListResponse,
@@ -35,7 +34,7 @@ async def list_document_questions(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # Verify document ownership
+
     await _verify_doc_ownership(db, document_id, user.id)
 
     q = select(Question).where(Question.document_id == document_id)
@@ -49,11 +48,9 @@ async def list_document_questions(
     elif has_answer is False:
         q = q.where(Question.answer.is_(None))
 
-    # Count
     count_q = select(func.count()).select_from(q.subquery())
     total = (await db.execute(count_q)).scalar() or 0
 
-    # Fetch with pagination
     q = q.order_by(Question.created_at).offset((page - 1) * page_size).limit(page_size)
     result = await db.execute(q)
     questions = result.scalars().all()
@@ -62,7 +59,6 @@ async def list_document_questions(
         items=[QuestionResponse.model_validate(qi) for qi in questions],
         total=total,
     )
-
 
 @router.get(
     "/questions/{question_id}",
@@ -76,7 +72,6 @@ async def get_question(
 ):
     q = await _get_owned_question(db, question_id, user.id)
     return QuestionResponse.model_validate(q)
-
 
 @router.patch(
     "/questions/{question_id}",
@@ -108,14 +103,12 @@ async def update_question(
     await db.refresh(q)
     return QuestionResponse.model_validate(q)
 
-
 async def _verify_doc_ownership(db: AsyncSession, doc_id: uuid.UUID, owner_id: uuid.UUID):
     result = await db.execute(
         select(Document.id).where(Document.id == doc_id, Document.owner_id == owner_id)
     )
     if not result.scalar_one_or_none():
         raise NotFoundError("Document")
-
 
 async def _get_owned_question(db: AsyncSession, question_id: uuid.UUID, owner_id: uuid.UUID) -> Question:
     """Get a question, verifying ownership through the document."""

@@ -21,9 +21,8 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
     task_track_started=True,
-    task_acks_late=True,  # Re-deliver tasks if worker crashes
-    worker_prefetch_multiplier=1,  # Fair scheduling across workers
+    task_acks_late=True,
+    worker_prefetch_multiplier=1,
 )
 
-# Auto-discover tasks in the workers package
 celery_app.autodiscover_tasks(["app.workers"])

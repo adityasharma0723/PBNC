@@ -26,7 +26,6 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-
 def normalize_question_number(raw: str) -> str:
     """Normalize a question number for matching.
 
@@ -35,16 +34,15 @@ def normalize_question_number(raw: str) -> str:
               "1a" -> "1a" (preserved for sub-questions)
     """
     s = raw.strip()
-    # Remove Q/q prefix
+
     s = re.sub(r'^[Qq]\.?\s*', '', s)
-    # Remove surrounding parentheses
+
     s = re.sub(r'^\((.+)\)$', r'\1', s)
-    # Remove trailing ) or .
+
     s = re.sub(r'[).]$', '', s)
-    # Strip leading zeros (but keep "0" itself)
+
     s = re.sub(r'^0+(\d)', r'\1', s)
     return s.strip()
-
 
 def parse_answer_key_text(text: str) -> list[dict[str, str]]:
     """Parse free-text answer key into (number, answer) pairs.
@@ -59,14 +57,14 @@ def parse_answer_key_text(text: str) -> list[dict[str, str]]:
     - "1 (b)" (answer in parens)
     """
     entries = []
-    # Pattern matches: optional Q prefix, number, separator, answer
+
     pattern = re.compile(
         r'(?:^|\n)\s*'
-        r'(?:[Qq]\.?\s*)?'         # Optional Q/q prefix
-        r'(\d+[a-z]?)'            # Question number (with optional sub-part)
+        r'(?:[Qq]\.?\s*)?'
+        r'(\d+[a-z]?)'
         r'\s*'
-        r'[-:.)\]}\s]+'           # Separator(s)
-        r'\(?([A-Da-d])\)?'       # Answer (A-D, optionally in parens)
+        r'[-:.)\]}\s]+'
+        r'\(?([A-Da-d])\)?'
         r'\s*(?:$|\n|,|;)',
         re.MULTILINE,
     )
@@ -77,7 +75,6 @@ def parse_answer_key_text(text: str) -> list[dict[str, str]]:
         entries.append({"number": number, "answer": answer})
 
     return entries
-
 
 def match_answers(
     questions: list[dict[str, Any]],
@@ -98,14 +95,13 @@ def match_answers(
         unmatched: answer entry with no matching question
         not_found: question with no matching answer entry
     """
-    # Build question index by normalized number
+
     q_index: dict[str, list[dict]] = {}
     for q in questions:
         if q.get("question_number"):
             norm = normalize_question_number(q["question_number"])
             q_index.setdefault(norm, []).append(q)
 
-    # Group answer entries by normalized question number to detect duplicates
     entries_by_num: dict[str, list[dict]] = {}
     for entry in answer_entries:
         norm_num = normalize_question_number(entry["question_number"])
@@ -118,7 +114,7 @@ def match_answers(
         matching_qs = q_index.get(norm_num, [])
 
         if len(num_entries) > 1:
-            # Duplicate question numbers in the key -> ambiguous, answer null
+
             for q in matching_qs:
                 matched_q_ids.add(id(q))
             results.append({
@@ -143,7 +139,6 @@ def match_answers(
             q = matching_qs[0]
             flags = []
 
-            # Validate answer label exists in options
             if q.get("options"):
                 option_labels = {
                     opt.get("label", "").upper()
@@ -161,7 +156,7 @@ def match_answers(
                 "flags": flags,
             })
         else:
-            # Multiple questions with the same number -> ambiguous
+
             for q in matching_qs:
                 matched_q_ids.add(id(q))
             results.append({
@@ -171,7 +166,6 @@ def match_answers(
                 "flags": ["AMBIGUOUS_QUESTION_NUMBER"],
             })
 
-    # Mark questions with no answer entry
     for q in questions:
         if id(q) not in matched_q_ids:
             results.append({

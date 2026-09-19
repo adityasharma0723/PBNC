@@ -43,7 +43,6 @@ from app.workers.celery_app import celery_app
 
 logger = get_logger(__name__)
 
-
 @celery_app.task(bind=True, name="process_document", max_retries=1)
 def process_document(self, document_id: str) -> dict:
     """Main document processing pipeline."""
@@ -57,10 +56,9 @@ def process_document(self, document_id: str) -> dict:
     finally:
         session.close()
 
-
 def _process(session, document_id: str) -> dict:
     """Core pipeline logic."""
-    # --- 1. Load and validate ---
+
     doc_uuid = uuid.UUID(str(document_id)) if not isinstance(document_id, uuid.UUID) else document_id
     doc = session.execute(
         select(Document).where(Document.id == doc_uuid)
@@ -75,14 +73,12 @@ def _process(session, document_id: str) -> dict:
     doc.updated_at = datetime.now(timezone.utc)
     session.commit()
 
-    # Clear previous results (idempotency)
     session.execute(delete(Page).where(Page.document_id == doc.id))
     session.execute(delete(Question).where(Question.document_id == doc.id))
     session.execute(delete(ReviewItem).where(ReviewItem.document_id == doc.id))
     session.execute(delete(AnswerKeyEntry).where(AnswerKeyEntry.document_id == doc.id))
     session.commit()
 
-    # Read file
     abs_path = get_absolute_path(doc.stored_path)
     if not os.path.exists(abs_path):
         raise FileNotFoundError(f"Stored file not found: {doc.stored_path}")
@@ -90,7 +86,6 @@ def _process(session, document_id: str) -> dict:
     with open(abs_path, "rb") as f:
         file_bytes = f.read()
 
-    # --- 2. Render pages ---
     if doc.mime_type == "application/pdf":
         rendered_pages = render_pdf_pages(file_bytes)
     else:
@@ -100,7 +95,6 @@ def _process(session, document_id: str) -> dict:
     doc.progress_pct = 20
     session.commit()
 
-    # --- 3-4. Quality check + Extract per page ---
     extractor = get_extractor()
     pages_questions = []
     page_numbers = []
@@ -110,10 +104,8 @@ def _process(session, document_id: str) -> dict:
     for i, rp in enumerate(rendered_pages):
         page_num = rp["page_number"]
 
-        # Quality assessment
         quality = assess_quality(rp["image_bytes"])
 
-        # Create Page record
         page_type_str = "other"
         raw_text = rp.get("raw_text")
 
@@ -128,7 +120,6 @@ def _process(session, document_id: str) -> dict:
             raw_text=raw_text,
         )
 
-        # Extract content
         try:
             extraction = extractor.extract_page(
                 rp["image_bytes"],
@@ -141,7 +132,6 @@ def _process(session, document_id: str) -> dict:
             pages_questions.append(extraction.questions)
             page_numbers.append(page_num)
 
-            # Store answer key entries from this page
             for ake in extraction.answer_key_entries:
                 entry = AnswerKeyEntry(
                     document_id=doc.id,
@@ -152,7 +142,6 @@ def _process(session, document_id: str) -> dict:
                 )
                 session.add(entry)
 
-            # Check orientation
             if not extraction.orientation_ok:
                 review_items.append(_review(
                     doc.id, None, Severity.warning, "POSSIBLY_ROTATED",
@@ -170,7 +159,6 @@ def _process(session, document_id: str) -> dict:
             ))
             has_warnings = True
 
-        # Quality review items
         for flag in quality.flags:
             review_items.append(_review(
                 doc.id, None, Severity.warning, flag,
@@ -180,14 +168,11 @@ def _process(session, document_id: str) -> dict:
 
         session.add(page)
 
-        # Update progress
         doc.progress_pct = 20 + int(60 * (i + 1) / len(rendered_pages))
         session.commit()
 
-    # --- 5. Stitch cross-page questions ---
     stitched = stitch_questions(pages_questions, page_numbers)
 
-    # --- 6. Store questions ---
     question_objects = []
     for sq in stitched:
         q_type = sq.get("type", "unknown")
@@ -211,23 +196,21 @@ def _process(session, document_id: str) -> dict:
             flags=sq.get("flags", []),
         )
         session.add(q)
-        session.flush()  # Get the ID
+        session.flush()
         question_objects.append(q)
 
     session.commit()
     doc.progress_pct = 85
     session.commit()
 
-    # --- 7. Answer key matching ---
     _match_answers_for_document(session, doc, question_objects, review_items)
     has_warnings = has_warnings or any(
         r.severity in (Severity.warning, Severity.error) for r in review_items
         if isinstance(r, ReviewItem)
     )
 
-    # --- 8. Confidence scoring ---
     for q in question_objects:
-        # Find page quality for this question's source pages
+
         page_quality = None
         if q.source_pages:
             page_result = session.execute(
@@ -256,7 +239,6 @@ def _process(session, document_id: str) -> dict:
         q.status = QuestionStatus(conf.status)
         q.flags = conf.flags
 
-        # Create review items for low-confidence questions
         if q.status == QuestionStatus.needs_review:
             review_items.append(_review(
                 doc.id, q.id, Severity.warning, "LOW_CONFIDENCE",
@@ -266,14 +248,12 @@ def _process(session, document_id: str) -> dict:
             ))
             has_warnings = True
 
-    # --- 9. Save review items ---
     for ri in review_items:
         if isinstance(ri, ReviewItem):
             session.add(ri)
         else:
             session.add(ri)
 
-    # --- 10. Final status ---
     doc.progress_pct = 100
     doc.status = (
         DocumentStatus.completed_with_warnings if has_warnings
@@ -281,7 +261,6 @@ def _process(session, document_id: str) -> dict:
     )
     doc.updated_at = datetime.now(timezone.utc)
 
-    # Update document role based on page types
     _infer_document_role(session, doc)
 
     session.commit()
@@ -300,15 +279,13 @@ def _process(session, document_id: str) -> dict:
         "review_items": len(review_items),
     }
 
-
 def _match_answers_for_document(session, doc, question_objects, review_items):
     """Match answer key entries to questions for this document and its group."""
-    # Collect all answer entries for this document
+
     entries = session.execute(
         select(AnswerKeyEntry).where(AnswerKeyEntry.document_id == doc.id)
     ).scalars().all()
 
-    # If document is in a group, also get entries from other group documents
     if doc.group_id:
         group_entries = session.execute(
             select(AnswerKeyEntry).where(
@@ -319,7 +296,6 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
         ).scalars().all()
         entries = list(group_entries)
 
-        # Also get questions from other documents in the group
         group_questions = session.execute(
             select(Question).where(
                 Question.group_id == doc.group_id,
@@ -333,14 +309,12 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
     if not entries:
         return
 
-    # Build index by normalized number
     q_by_number: dict[str, list[Question]] = {}
     for q in all_questions:
         if q.question_number:
             norm = normalize_question_number(q.question_number)
             q_by_number.setdefault(norm, []).append(q)
 
-    # Group answer entries by normalized question number to detect duplicate keys
     entries_by_number: dict[str, list[AnswerKeyEntry]] = {}
     for entry in entries:
         norm = normalize_question_number(entry.question_number)
@@ -350,7 +324,7 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
         matching = q_by_number.get(norm, [])
 
         if len(num_entries) > 1:
-            # Duplicate question numbers in the key -> ambiguous, answer null
+
             for q in matching:
                 q.answer = None
                 q.answer_status = AnswerStatus.ambiguous
@@ -367,7 +341,7 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
         entry = num_entries[0]
 
         if len(matching) == 0:
-            # Unmatched entry
+
             review_items.append(_review(
                 doc.id, None, Severity.info, "UNMATCHED_ANSWER_KEY",
                 f"Answer key entry '{entry.question_number}={entry.answer_value}' "
@@ -378,7 +352,6 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
             q = matching[0]
             entry.matched_question_id = q.id
 
-            # Validate answer label in options
             flags = []
             if q.options:
                 option_labels = {
@@ -405,7 +378,7 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
             if flags:
                 q.flags = (q.flags or []) + flags
         else:
-            # Ambiguous: multiple questions with same number
+
             entry.matched_question_id = matching[0].id
             for q in matching:
                 q.answer_status = AnswerStatus.ambiguous
@@ -416,7 +389,6 @@ def _match_answers_for_document(session, doc, question_objects, review_items):
                 f"{len(matching)} questions",
                 entry.source_page,
             ))
-
 
 def _infer_document_role(session, doc):
     """Infer document role from page types."""
@@ -437,7 +409,6 @@ def _infer_document_role(session, doc):
     elif PageType.mixed in types_set:
         doc.role = DocumentRole.mixed
 
-
 def _review(doc_id, question_id, severity, code, message, page_number=None):
     """Create a ReviewItem."""
     return ReviewItem(
@@ -449,7 +420,6 @@ def _review(doc_id, question_id, severity, code, message, page_number=None):
         page_number=page_number,
     )
 
-
 def _mark_failed(session, document_id, error_msg):
     """Mark a document as failed with a safe error message."""
     try:
@@ -459,7 +429,7 @@ def _mark_failed(session, document_id, error_msg):
         ).scalar_one_or_none()
         if doc:
             doc.status = DocumentStatus.failed
-            doc.error_message = error_msg[:500]  # Truncate for safety
+            doc.error_message = error_msg[:500]
             doc.updated_at = datetime.now(timezone.utc)
             session.commit()
     except Exception:

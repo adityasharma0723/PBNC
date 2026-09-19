@@ -16,13 +16,10 @@ import struct
 
 from PIL import Image, ImageDraw, ImageFont
 
-
 SAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "samples")
-
 
 def ensure_dir():
     os.makedirs(SAMPLES_DIR, exist_ok=True)
-
 
 def create_pdf_from_pages(pages_text: list[str], filename: str) -> str:
     """Create a simple PDF from page text using PyMuPDF."""
@@ -30,7 +27,7 @@ def create_pdf_from_pages(pages_text: list[str], filename: str) -> str:
 
     doc = fitz.open()
     for text in pages_text:
-        page = doc.new_page(width=595, height=842)  # A4
+        page = doc.new_page(width=595, height=842)
         text_rect = fitz.Rect(50, 50, 545, 792)
         page.insert_textbox(text_rect, text, fontsize=11, fontname="helv")
 
@@ -38,7 +35,6 @@ def create_pdf_from_pages(pages_text: list[str], filename: str) -> str:
     doc.save(path)
     doc.close()
     return path
-
 
 def create_png_from_text(text: str, filename: str, width=800, height=600) -> str:
     """Create a PNG image with text."""
@@ -53,7 +49,6 @@ def create_png_from_text(text: str, filename: str, width=800, height=600) -> str
     path = os.path.join(SAMPLES_DIR, filename)
     img.save(path, "PNG")
     return path
-
 
 def sample_1_clean_pdf():
     """Clean digital PDF, ~10 MCQs, 3 pages, answer key at end."""
@@ -126,12 +121,10 @@ ANSWER KEY
 
     return create_pdf_from_pages([page1, page2, page3], "01_clean_digital.pdf")
 
-
 def sample_2_scanned_pdf():
     """Scanned-style PDF: rasterize sample 1 with slight rotation and noise."""
     import fitz
 
-    # First create the clean PDF
     src_path = os.path.join(SAMPLES_DIR, "01_clean_digital.pdf")
     if not os.path.exists(src_path):
         sample_1_clean_pdf()
@@ -140,21 +133,19 @@ def sample_2_scanned_pdf():
     out_doc = fitz.open()
 
     for page in doc:
-        # Render at lower quality
+
         mat = fitz.Matrix(1.5, 1.5)
         pix = page.get_pixmap(matrix=mat)
         img_bytes = pix.tobytes("png")
 
-        # Open with Pillow, apply degradation
         img = Image.open(io.BytesIO(img_bytes))
-        # Slight rotation
+
         img = img.rotate(1.5, expand=True, fillcolor="white")
-        # Convert back
+
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         buf.seek(0)
 
-        # Insert as image page
         new_page = out_doc.new_page(width=img.width * 0.8, height=img.height * 0.8)
         new_page.insert_image(new_page.rect, stream=buf.getvalue())
 
@@ -163,7 +154,6 @@ def sample_2_scanned_pdf():
     out_doc.close()
     doc.close()
     return path
-
 
 def sample_3_png_screenshot():
     """PNG screenshot of a single question page."""
@@ -187,7 +177,6 @@ Q3. Acceleration due to gravity on Earth is approximately:
   (c) 12.8 m/s^2
   (d) 15.8 m/s^2"""
     return create_png_from_text(text, "03_screenshot.png")
-
 
 def sample_4_cross_page():
     """PDF with a question split across page boundary."""
@@ -228,7 +217,6 @@ def sample_4_cross_page():
 
     return create_pdf_from_pages([page1, page2], "04_cross_page.pdf")
 
-
 def sample_5_separate_answer_key():
     """Separate Answer Key PDF with different format."""
     content = """BIOLOGY TEST - ANSWER KEY
@@ -245,7 +233,6 @@ Prepared by: Prof. Smith
 Date: January 2024"""
 
     return create_pdf_from_pages([content], "05_answer_key_separate.pdf")
-
 
 def sample_6_edge_cases():
     """PDF with missing number, garbled text, unmatched answer entry."""
@@ -274,26 +261,22 @@ ANSWER KEY:
 
     return create_pdf_from_pages([page1], "06_edge_cases.pdf")
 
-
 def sample_7_invalid_files():
     """Create invalid test files."""
-    # Renamed .exe as .pdf (MZ header)
+
     exe_path = os.path.join(SAMPLES_DIR, "07a_fake_exe.pdf")
     with open(exe_path, "wb") as f:
         f.write(b"MZ" + b"\x00" * 200)
 
-    # Corrupt PDF (valid header, garbage body)
     corrupt_path = os.path.join(SAMPLES_DIR, "07b_corrupt.pdf")
     with open(corrupt_path, "wb") as f:
         f.write(b"%PDF-1.4\nthis is totally not a valid pdf structure\n%%EOF")
 
-    # "Oversized" file (just a marker; actual test sets a low limit)
     oversize_path = os.path.join(SAMPLES_DIR, "07c_oversized.txt")
     with open(oversize_path, "w") as f:
         f.write("This file simulates an oversized upload. Actual test sets MAX_UPLOAD_SIZE_MB=0.")
 
     return exe_path, corrupt_path, oversize_path
-
 
 def main():
     ensure_dir()
@@ -319,7 +302,6 @@ def main():
         print(f"  {desc}: {os.path.basename(path)} ({size:,} bytes)")
 
     print(f"\nAll samples saved to: {SAMPLES_DIR}")
-
 
 if __name__ == "__main__":
     main()

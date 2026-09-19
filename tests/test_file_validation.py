@@ -4,7 +4,6 @@ import pytest
 from app.services.file_validation import validate_file, detect_mime_type
 from app.core.errors import FileTooLargeError, UnsupportedMediaError, ValidationError
 
-
 class TestMagicByteDetection:
     """Verify that MIME type detection uses magic bytes, not extension."""
 
@@ -22,14 +21,13 @@ class TestMagicByteDetection:
 
     def test_reject_exe_as_pdf(self):
         """A renamed .exe should be rejected by magic bytes."""
-        # MZ header (PE executable)
+
         exe_header = b"MZ" + b"\x00" * 6
         assert detect_mime_type(exe_header[:8]) is None
 
     def test_reject_unknown_format(self):
         header = b"\x00\x01\x02\x03\x04\x05\x06\x07"
         assert detect_mime_type(header[:8]) is None
-
 
 class TestFileValidation:
     """End-to-end file validation tests."""
@@ -52,7 +50,7 @@ class TestFileValidation:
         """File exceeding MAX_UPLOAD_SIZE_MB should be rejected."""
         from app.core.config import settings
         original = settings.MAX_UPLOAD_SIZE_MB
-        settings.MAX_UPLOAD_SIZE_MB = 0  # 0 MB limit
+        settings.MAX_UPLOAD_SIZE_MB = 0
         try:
             with pytest.raises(FileTooLargeError):
                 validate_file(b"%PDF-1.4" + b"\x00" * 100)

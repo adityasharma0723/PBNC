@@ -17,7 +17,6 @@ from app.services.extractors.base import (
     PageExtraction,
 )
 
-
 class FakeExtractor:
     """Deterministic extractor for testing.
 
@@ -33,15 +32,12 @@ class FakeExtractor:
         text = page_text or ""
         text_lower = text.lower()
 
-        # Detect answer key pages
         if "answer key" in text_lower or "answer" in text_lower and "key" in text_lower:
             return self._answer_key_page(text, page_number)
 
-        # Detect blank pages
         if len(text.strip()) < 10 and len(page_image_bytes) < 1000:
             return PageExtraction(page_type="blank")
 
-        # Default: generate questions based on page number
         return self._questions_page(text, page_number)
 
     def _questions_page(self, text: str, page_number: int) -> PageExtraction:
@@ -51,10 +47,9 @@ class FakeExtractor:
 
         for i in range(1, 6):
             q_num = base_num + i
-            continues_on_next = (i == 5 and page_number < 3)  # Last Q on pages 1-2 continues
-            continues_from_prev = (i == 1 and page_number > 1)  # First Q on pages 2+ is continuation
+            continues_on_next = (i == 5 and page_number < 3)
+            continues_from_prev = (i == 1 and page_number > 1)
 
-            # Skip number for continuations from previous page
             number = None if continues_from_prev else str(q_num)
 
             q = ExtractedQuestion(
@@ -90,7 +85,6 @@ class FakeExtractor:
             for i in range(10)
         ]
 
-        # Add one entry with no matching question (for unmatched testing)
         entries.append(ExtractedAnswerKeyEntry(number="99", answer="C"))
 
         return PageExtraction(

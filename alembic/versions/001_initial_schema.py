@@ -13,15 +13,13 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 
-
 revision: str = "001"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
 def upgrade() -> None:
-    # --- users ---
+
     op.create_table(
         "users",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -31,7 +29,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_users_email", "users", ["email"])
 
-    # --- document_groups ---
     op.create_table(
         "document_groups",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -41,7 +38,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_document_groups_owner_id", "document_groups", ["owner_id"])
 
-    # --- documents ---
     op.create_table(
         "documents",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -65,7 +61,6 @@ def upgrade() -> None:
     op.create_index("ix_documents_status", "documents", ["status"])
     op.create_index("ix_documents_sha256", "documents", ["sha256"])
 
-    # --- pages ---
     op.create_table(
         "pages",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -80,10 +75,9 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
     )
     op.create_index("ix_pages_document_id", "pages", ["document_id"])
-    # Unique constraint: one page number per document
+
     op.create_unique_constraint("uq_pages_document_page", "pages", ["document_id", "page_number"])
 
-    # --- questions ---
     op.create_table(
         "questions",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -109,7 +103,6 @@ def upgrade() -> None:
     op.create_index("ix_questions_group_id", "questions", ["group_id"])
     op.create_index("ix_questions_status", "questions", ["status"])
 
-    # --- review_items ---
     op.create_table(
         "review_items",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -126,7 +119,6 @@ def upgrade() -> None:
     op.create_index("ix_review_items_question_id", "review_items", ["question_id"])
     op.create_index("ix_review_items_code", "review_items", ["code"])
 
-    # --- answer_key_entries ---
     op.create_table(
         "answer_key_entries",
         sa.Column("id", UUID(as_uuid=True), primary_key=True),
@@ -141,7 +133,6 @@ def upgrade() -> None:
     op.create_index("ix_answer_key_entries_document_id", "answer_key_entries", ["document_id"])
     op.create_index("ix_answer_key_entries_matched_question_id", "answer_key_entries", ["matched_question_id"])
 
-
 def downgrade() -> None:
     op.drop_table("answer_key_entries")
     op.drop_table("review_items")
@@ -151,7 +142,6 @@ def downgrade() -> None:
     op.drop_table("document_groups")
     op.drop_table("users")
 
-    # Drop enums
     for name in [
         "documentrole", "documentstatus", "pagetype", "questiontype",
         "answerstatus", "questionstatus", "severity",

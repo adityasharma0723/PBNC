@@ -19,10 +19,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-# Dialect-agnostic types that work on both SQLite (tests/offline) and PostgreSQL (production)
 JSON_TYPE = JSON().with_variant(JSONB, "postgresql")
 ARRAY_INT_TYPE = JSON().with_variant(ARRAY(Integer), "postgresql")
-
 
 class QuestionType(str, enum.Enum):
     mcq_single = "mcq_single"
@@ -33,19 +31,16 @@ class QuestionType(str, enum.Enum):
     long_answer = "long_answer"
     unknown = "unknown"
 
-
 class AnswerStatus(str, enum.Enum):
     matched = "matched"
     unmatched = "unmatched"
     ambiguous = "ambiguous"
     not_found = "not_found"
 
-
 class QuestionStatus(str, enum.Enum):
     extracted = "extracted"
     partial = "partial"
     needs_review = "needs_review"
-
 
 class Question(Base):
     __tablename__ = "questions"
@@ -85,6 +80,5 @@ class Question(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     document = relationship("Document", back_populates="questions")
     review_items = relationship("ReviewItem", back_populates="question")

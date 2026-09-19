@@ -12,7 +12,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class DocumentGroup(Base):
     __tablename__ = "document_groups"
 
@@ -27,6 +26,5 @@ class DocumentGroup(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     owner = relationship("User", back_populates="groups")
     documents = relationship("Document", back_populates="group")

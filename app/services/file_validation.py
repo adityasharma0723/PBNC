@@ -13,14 +13,13 @@ Magic byte signatures:
 import io
 from dataclasses import dataclass
 
-import fitz  # PyMuPDF
+import fitz
 from PIL import Image
 
 from app.core.config import settings
 from app.core.errors import FileTooLargeError, UnsupportedMediaError, ValidationError
 
-# Pillow safety: limit decompression to prevent zip bombs
-Image.MAX_IMAGE_PIXELS = 178_956_970  # ~13400x13400
+Image.MAX_IMAGE_PIXELS = 178_956_970
 
 MAGIC_SIGNATURES: dict[str, list[bytes]] = {
     "application/pdf": [b"%PDF"],
@@ -30,13 +29,11 @@ MAGIC_SIGNATURES: dict[str, list[bytes]] = {
 
 ALLOWED_MIMES = set(MAGIC_SIGNATURES.keys())
 
-
 @dataclass
 class FileValidationResult:
     mime_type: str
     size_bytes: int
     page_count: int
-
 
 def detect_mime_type(header: bytes) -> str | None:
     """Detect MIME type from magic bytes (first 8 bytes are sufficient)."""
@@ -45,7 +42,6 @@ def detect_mime_type(header: bytes) -> str | None:
             if header[: len(sig)] == sig:
                 return mime
     return None
-
 
 def validate_file(file_bytes: bytes) -> FileValidationResult:
     """Validate an uploaded file. Raises on any issue.
@@ -91,7 +87,7 @@ def validate_file(file_bytes: bytes) -> FileValidationResult:
     elif mime.startswith("image/"):
         try:
             img = Image.open(io.BytesIO(file_bytes))
-            img.verify()  # Checks for decompression bombs and corruption
+            img.verify()
         except Image.DecompressionBombError:
             raise ValidationError("Image exceeds maximum pixel limit (possible decompression bomb)")
         except Exception:

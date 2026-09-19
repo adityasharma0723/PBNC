@@ -11,7 +11,6 @@ from typing import Protocol
 
 from pydantic import BaseModel, Field
 
-
 class ExtractedQuestion(BaseModel):
     """A single question extracted from a page."""
     number: str | None = Field(None, description="Question number as it appears, or null")
@@ -24,20 +23,17 @@ class ExtractedQuestion(BaseModel):
     continues_on_next: bool = False
     model_confidence: float = Field(0.5, ge=0.0, le=1.0)
 
-
 class ExtractedAnswerKeyEntry(BaseModel):
     """A single answer key entry extracted from a page."""
     number: str
     answer: str
 
-
 class PageExtraction(BaseModel):
     """Complete extraction result for one page."""
-    page_type: str = "other"  # questions | answer_key | mixed | blank | other
+    page_type: str = "other"
     orientation_ok: bool = True
     questions: list[ExtractedQuestion] = Field(default_factory=list)
     answer_key_entries: list[ExtractedAnswerKeyEntry] = Field(default_factory=list)
-
 
 class Extractor(Protocol):
     """Protocol for page content extraction.

@@ -33,7 +33,6 @@ from app.services.storage import store_file, get_extension_for_mime, delete_file
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
-
 @router.post(
     "",
     response_model=DocumentUploadResponse,
@@ -53,7 +52,7 @@ async def upload_document(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # Read file with size cap to prevent memory exhaustion
+
     max_bytes = settings.max_upload_bytes
     chunks = []
     total = 0
@@ -72,10 +71,8 @@ async def upload_document(
     if not file_bytes:
         raise ValidationError("Empty file uploaded")
 
-    # Validate content (magic bytes, page count, encryption, etc.)
     validation = validate_file(file_bytes)
 
-    # Verify group ownership if provided
     if group_id:
         result = await db.execute(
             select(DocumentGroup).where(
@@ -86,11 +83,9 @@ async def upload_document(
         if not result.scalar_one_or_none():
             raise NotFoundError("Group")
 
-    # Store file with safe UUID name
     extension = get_extension_for_mime(validation.mime_type)
     stored_path, sha256 = store_file(file_bytes, extension)
 
-    # Create DB record
     doc = Document(
         owner_id=user.id,
         group_id=group_id,
@@ -107,7 +102,6 @@ async def upload_document(
     await db.commit()
     await db.refresh(doc)
 
-    # Enqueue processing (Celery if available, BackgroundTasks fallback for local dev)
     from app.workers.tasks import process_document
     if settings.DATABASE_URL.startswith("sqlite"):
         background_tasks.add_task(process_document, str(doc.id))
@@ -118,7 +112,6 @@ async def upload_document(
             background_tasks.add_task(process_document, str(doc.id))
 
     return DocumentUploadResponse(id=doc.id, status=doc.status)
-
 
 @router.get(
     "",
@@ -133,11 +126,9 @@ async def list_documents(
 ):
     offset = (page - 1) * page_size
 
-    # Count
     count_q = select(func.count()).select_from(Document).where(Document.owner_id == user.id)
     total = (await db.execute(count_q)).scalar() or 0
 
-    # Fetch
     q = (
         select(Document)
         .where(Document.owner_id == user.id)
@@ -149,7 +140,6 @@ async def list_documents(
     docs = result.scalars().all()
 
     return DocumentListResponse(items=[DocumentResponse.model_validate(d) for d in docs], total=total)
-
 
 @router.get(
     "/{document_id}",
@@ -164,7 +154,6 @@ async def get_document(
     doc = await _get_owned_document(db, document_id, user.id)
     return DocumentResponse.model_validate(doc)
 
-
 @router.delete(
     "/{document_id}",
     status_code=204,
@@ -177,10 +166,8 @@ async def delete_document(
 ):
     doc = await _get_owned_document(db, document_id, user.id)
 
-    # Delete stored file
     delete_file(doc.stored_path)
 
-    # Delete page images
     result = await db.execute(select(Page).where(Page.document_id == doc.id))
     for page in result.scalars().all():
         if page.image_path:
@@ -188,7 +175,6 @@ async def delete_document(
 
     await db.delete(doc)
     await db.commit()
-
 
 @router.get(
     "/{document_id}/pages",
@@ -208,7 +194,6 @@ async def list_pages(
     )
     pages = result.scalars().all()
     return [PageResponse.model_validate(p) for p in pages]
-
 
 @router.get(
     "/{document_id}/pages/{page_number}",
@@ -232,7 +217,6 @@ async def get_page(
     if not page:
         raise NotFoundError("Page")
     return PageResponse.model_validate(page)
-
 
 async def _get_owned_document(
     db: AsyncSession, document_id: uuid.UUID, owner_id: uuid.UUID

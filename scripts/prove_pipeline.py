@@ -10,7 +10,6 @@ import os
 import sys
 import uuid
 
-# Configure environment before importing app
 sys.path.insert(0, os.path.abspath("."))
 os.environ["EXTRACTOR"] = "fake"
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///demo.db"
@@ -32,7 +31,6 @@ from app.services.storage import store_file, get_extension_for_mime
 from app.workers.tasks import process_document
 from app.core.security import hash_password
 
-
 def main():
     print(">>> 1. Initializing SQLite Database (demo.db)...")
     Base.metadata.drop_all(bind=sync_engine)
@@ -40,7 +38,6 @@ def main():
 
     session = SyncSessionLocal()
 
-    # Create User
     user = User(
         id=uuid.uuid4(),
         email="examiner@example.com",
@@ -50,7 +47,6 @@ def main():
     session.commit()
     print(f"Created test user: {user.email} (ID: {user.id})\n")
 
-    # Sample to process: 01_clean_digital.pdf
     sample_rel = os.path.join("samples", "01_clean_digital.pdf")
     abs_path = os.path.abspath(sample_rel)
     print(f">>> 2. Ingesting sample file: {sample_rel} ({os.path.getsize(abs_path)} bytes)")
@@ -89,7 +85,6 @@ def main():
     print("ACTUAL DATABASE OUTPUT (Queried from SQLite DB)")
     print("=" * 90)
 
-    # 1. Document record
     print("\n--- TABLE: documents ---")
     doc_record = session.execute(
         select(Document).where(Document.id == doc_id)
@@ -107,7 +102,6 @@ def main():
         f"  Updated At:    {doc_record.updated_at}"
     )
 
-    # 2. Pages records
     print("\n--- TABLE: pages ---")
     pages = session.execute(
         select(Page).where(Page.document_id == doc_id).order_by(Page.page_number)
@@ -121,7 +115,6 @@ def main():
             f"Image: {p.image_path} | Text: '{snippet}...'"
         )
 
-    # 3. Questions records
     print("\n--- TABLE: questions ---")
     questions = session.execute(
         select(Question).where(Question.document_id == doc_id).order_by(Question.created_at)
@@ -140,7 +133,6 @@ def main():
             opts_summary = [f"{o.get('label')}: {o.get('text')}" for o in q.options[:2]]
             print(f"      Options (sample): {', '.join(opts_summary)} ... ({len(q.options)} total)")
 
-    # 4. Answer key entries
     print("\n--- TABLE: answer_key_entries ---")
     entries = session.execute(
         select(AnswerKeyEntry).where(AnswerKeyEntry.document_id == doc_id)
@@ -152,7 +144,6 @@ def main():
             f"Source Page: {ake.source_page} | Raw: '{ake.raw_text}'"
         )
 
-    # 5. Review items
     print("\n--- TABLE: review_items ---")
     items = session.execute(
         select(ReviewItem).where(ReviewItem.document_id == doc_id)
@@ -168,7 +159,6 @@ def main():
     print("PIPELINE EXECUTION VERIFIED SUCCESSFULLY.")
     print("=" * 90)
     session.close()
-
 
 if __name__ == "__main__":
     main()

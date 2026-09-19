@@ -13,9 +13,6 @@ from app.models.page import PageType
 from app.models.question import AnswerStatus, QuestionStatus, QuestionType
 from app.models.review import Severity
 
-
-# --- Document ---
-
 class DocumentResponse(BaseModel):
     id: uuid.UUID
     group_id: uuid.UUID | None = None
@@ -32,11 +29,9 @@ class DocumentResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
 class DocumentListResponse(BaseModel):
     items: list[DocumentResponse]
     total: int
-
 
 class DocumentUploadResponse(BaseModel):
     id: uuid.UUID
@@ -51,9 +46,6 @@ class DocumentUploadResponse(BaseModel):
         }
     }}
 
-
-# --- Page ---
-
 class PageResponse(BaseModel):
     id: uuid.UUID
     page_number: int
@@ -66,20 +58,15 @@ class PageResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
-# --- Question ---
-
 class OptionSchema(BaseModel):
     label: str
     text: str
-
 
 class AnswerSchema(BaseModel):
     value: str
     source_document_id: uuid.UUID | None = None
     source_page: int | None = None
     match_method: str | None = None
-
 
 class QuestionResponse(BaseModel):
     id: uuid.UUID
@@ -102,11 +89,9 @@ class QuestionResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
 class QuestionListResponse(BaseModel):
     items: list[QuestionResponse]
     total: int
-
 
 class QuestionUpdateRequest(BaseModel):
     """Allow reviewer to correct extracted data."""
@@ -115,9 +100,6 @@ class QuestionUpdateRequest(BaseModel):
     options: list[OptionSchema] | None = None
     answer: AnswerSchema | None = None
     question_number: str | None = None
-
-
-# --- Review Item ---
 
 class ReviewItemResponse(BaseModel):
     id: uuid.UUID
@@ -132,12 +114,8 @@ class ReviewItemResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
 class ReviewItemUpdate(BaseModel):
     resolved: bool
-
-
-# --- Answer Key ---
 
 class AnswerKeyEntryResponse(BaseModel):
     id: uuid.UUID
@@ -148,14 +126,10 @@ class AnswerKeyEntryResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
-# --- Group ---
-
 class GroupCreateRequest(BaseModel):
     name: str
 
     model_config = {"json_schema_extra": {"example": {"name": "Math Final 2024"}}}
-
 
 class GroupResponse(BaseModel):
     id: uuid.UUID
@@ -164,7 +138,6 @@ class GroupResponse(BaseModel):
     document_count: int = 0
 
     model_config = {"from_attributes": True}
-
 
 class GroupAddDocumentRequest(BaseModel):
     document_id: uuid.UUID

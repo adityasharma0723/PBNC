@@ -27,7 +27,6 @@ from app.schemas.document import (
 
 router = APIRouter(prefix="/groups", tags=["Groups"])
 
-
 @router.post(
     "",
     response_model=GroupResponse,
@@ -44,7 +43,6 @@ async def create_group(
     await db.commit()
     await db.refresh(group)
     return GroupResponse(id=group.id, name=group.name, created_at=group.created_at, document_count=0)
-
 
 @router.get(
     "",
@@ -73,7 +71,6 @@ async def list_groups(
         ))
     return responses
 
-
 @router.get(
     "/{group_id}",
     response_model=GroupResponse,
@@ -93,7 +90,6 @@ async def get_group(
         id=group.id, name=group.name, created_at=group.created_at, document_count=count
     )
 
-
 @router.post(
     "/{group_id}/documents",
     response_model=DocumentResponse,
@@ -107,7 +103,6 @@ async def add_document_to_group(
 ):
     group = await _get_owned_group(db, group_id, user.id)
 
-    # Verify document ownership
     result = await db.execute(
         select(Document).where(
             Document.id == body.document_id,
@@ -122,7 +117,6 @@ async def add_document_to_group(
     if body.role != DocumentRole.unknown:
         doc.role = body.role
 
-    # Also update questions' group_id
     await db.execute(
         select(Question).where(Question.document_id == doc.id)
     )
@@ -135,16 +129,13 @@ async def add_document_to_group(
     await db.commit()
     await db.refresh(doc)
 
-    # Trigger re-matching
     try:
         from app.workers.tasks import process_document
-        # We don't reprocess, just rematch - but for simplicity, we note
-        # that full reprocessing would re-trigger matching
+
     except Exception:
         pass
 
     return DocumentResponse.model_validate(doc)
-
 
 @router.delete(
     "/{group_id}/documents/{document_id}",
@@ -172,7 +163,6 @@ async def remove_document_from_group(
 
     doc.group_id = None
 
-    # Clear group from questions
     questions_result = await db.execute(
         select(Question).where(Question.document_id == doc.id)
     )
@@ -180,7 +170,6 @@ async def remove_document_from_group(
         q.group_id = None
 
     await db.commit()
-
 
 @router.get(
     "/{group_id}/questions",
@@ -212,7 +201,6 @@ async def list_group_questions(
         total=total,
     )
 
-
 @router.post(
     "/{group_id}/rematch",
     summary="Re-run answer key matching for the group",
@@ -231,13 +219,11 @@ async def rematch_group(
 
     await _get_owned_group(db, group_id, user.id)
 
-    # Get all questions in group
     q_result = await db.execute(
         select(Question).where(Question.group_id == group_id)
     )
     questions = list(q_result.scalars().all())
 
-    # Get all answer entries in group
     e_result = await db.execute(
         select(AnswerKeyEntry).join(Document).where(Document.group_id == group_id)
     )
@@ -246,7 +232,6 @@ async def rematch_group(
     if not entries:
         return {"message": "No answer key entries found in group", "matched": 0}
 
-    # Build question index
     q_by_number: dict[str, list[Question]] = {}
     for q in questions:
         if q.question_number:
@@ -288,7 +273,6 @@ async def rematch_group(
 
     await db.commit()
     return {"message": f"Re-matched {matched_count} answers", "matched": matched_count}
-
 
 async def _get_owned_group(db: AsyncSession, group_id: uuid.UUID, owner_id: uuid.UUID) -> DocumentGroup:
     result = await db.execute(

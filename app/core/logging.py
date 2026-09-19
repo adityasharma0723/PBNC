@@ -7,7 +7,6 @@ Sensitive data (API keys, document content) must never be logged.
 import logging
 import sys
 
-
 def setup_logging(debug: bool = False) -> None:
     level = logging.DEBUG if debug else logging.INFO
     handler = logging.StreamHandler(sys.stdout)
@@ -21,10 +20,8 @@ def setup_logging(debug: bool = False) -> None:
     root.setLevel(level)
     root.handlers = [handler]
 
-    # Suppress noisy libraries
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
-
 
 def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)

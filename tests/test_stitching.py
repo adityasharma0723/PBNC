@@ -4,7 +4,6 @@ import pytest
 from app.services.stitching import stitch_questions
 from app.services.extractors.base import ExtractedQuestion
 
-
 def _q(number=None, text="Q text", continues_from=False, continues_on=False,
        options=None, confidence=0.9):
     """Helper to create ExtractedQuestion instances."""
@@ -17,7 +16,6 @@ def _q(number=None, text="Q text", continues_from=False, continues_on=False,
         continues_on_next=continues_on,
         model_confidence=confidence,
     )
-
 
 class TestStitching:
 
@@ -40,7 +38,7 @@ class TestStitching:
         ]
         result = stitch_questions(pages, [1, 2])
         assert len(result) == 3
-        # Stitched question
+
         assert result[1]["number"] == "2"
         assert "Start of Q2" in result[1]["text"]
         assert "end of Q2" in result[1]["text"]

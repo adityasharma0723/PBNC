@@ -3,7 +3,6 @@
 import pytest
 from app.services.answer_key import normalize_question_number, parse_answer_key_text, match_answers
 
-
 class TestNormalizeQuestionNumber:
 
     def test_plain_number(self):
@@ -36,7 +35,6 @@ class TestNormalizeQuestionNumber:
     def test_whitespace(self):
         assert normalize_question_number("  Q.3  ") == "3"
 
-
 class TestParseAnswerKeyText:
 
     def test_dash_format(self):
@@ -66,13 +64,12 @@ class TestParseAnswerKeyText:
         text = "1 (b)\n2 (a)\n3 (c)"
         entries = parse_answer_key_text(text)
         assert len(entries) == 3
-        assert entries[0]["answer"] == "B"  # Uppercased
+        assert entries[0]["answer"] == "B"
 
     def test_mixed_format(self):
         text = "1-A\n2. B\nQ3: C\n4) D"
         entries = parse_answer_key_text(text)
         assert len(entries) == 4
-
 
 class TestMatchAnswers:
 
@@ -121,11 +118,11 @@ class TestMatchAnswers:
         results = match_answers(questions, entries)
 
         not_found = [r for r in results if r["status"] == "not_found"]
-        assert len(not_found) == 2  # Q2 and Q3
+        assert len(not_found) == 2
 
     def test_ambiguous_matching(self):
         """Multiple questions with the same normalized number."""
-        questions = self._make_questions(["1", "1"])  # Duplicate
+        questions = self._make_questions(["1", "1"])
         entries = self._make_entries([("1", "A")])
         results = match_answers(questions, entries)
 
@@ -135,7 +132,7 @@ class TestMatchAnswers:
     def test_answer_not_in_options(self):
         """Answer label doesn't exist in question options."""
         questions = [{"question_number": "1", "options": [{"label": "A", "text": "opt A"}]}]
-        entries = [{"question_number": "1", "answer_value": "D"}]  # D not in options
+        entries = [{"question_number": "1", "answer_value": "D"}]
         results = match_answers(questions, entries)
 
         matched = [r for r in results if r["status"] == "matched"]
@@ -156,7 +153,6 @@ class TestMatchAnswers:
         questions = self._make_questions(["1", "2", "3"])
         entries = self._make_entries([("1", "A"), ("2", "B"), ("3", "C")])
 
-        # Same result regardless of order
         results_forward = match_answers(questions, entries)
         results_reverse = match_answers(questions, list(reversed(entries)))
 

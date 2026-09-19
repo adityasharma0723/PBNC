@@ -10,7 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -23,6 +22,5 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     documents = relationship("Document", back_populates="owner", cascade="all, delete-orphan")
     groups = relationship("DocumentGroup", back_populates="owner", cascade="all, delete-orphan")

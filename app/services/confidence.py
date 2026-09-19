@@ -29,7 +29,6 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-# Penalty weights (negative values subtracted from confidence)
 PENALTIES = {
     "MISSING_NUMBER": 0.10,
     "BAD_OPTION_COUNT": 0.10,
@@ -47,13 +46,11 @@ PENALTIES = {
     "FAILED_EXTRACTION": 0.50,
 }
 
-
 @dataclass
 class ConfidenceResult:
     confidence: float
-    status: str  # extracted | partial | needs_review
+    status: str
     flags: list[str]
-
 
 def compute_confidence(
     model_confidence: float,
@@ -73,44 +70,36 @@ def compute_confidence(
     Each flag explains a penalty that was applied.
     """
     score = model_confidence
-    flags = list(existing_flags)  # Copy to avoid mutating input
+    flags = list(existing_flags)
 
-    # --- Missing question number ---
     if not question_number:
         _apply_penalty(flags, "MISSING_NUMBER")
 
-    # --- Option count check for MCQ types ---
     if question_type in ("mcq_single", "mcq_multiple"):
         opt_count = len(options) if options else 0
         if opt_count < 2 or opt_count > 6:
             _apply_penalty(flags, "BAD_OPTION_COUNT")
 
-    # --- Very short text ---
     if len(question_text.strip()) < 15:
         _apply_penalty(flags, "SHORT_TEXT")
 
-    # --- Image/table not fully captured ---
     if has_image:
         _apply_penalty(flags, "HAS_UNCAPTURED_IMAGE")
     if has_table:
         _apply_penalty(flags, "HAS_UNCAPTURED_TABLE")
 
-    # --- Answer status penalties ---
     if answer_status == "ambiguous":
         _apply_penalty(flags, "ANSWER_AMBIGUOUS")
     elif answer_status == "unmatched":
         _apply_penalty(flags, "ANSWER_UNMATCHED")
 
-    # --- Page quality ---
     if page_quality is not None and page_quality < 0.5:
         if "LOW_QUALITY_BLUR" not in flags:
             _apply_penalty(flags, "LOW_QUALITY_BLUR")
 
-    # --- Calculate final score ---
     total_penalty = sum(PENALTIES.get(f, 0) for f in flags)
     score = max(0.0, min(1.0, score - total_penalty))
 
-    # --- Map to status ---
     if score >= settings.CONFIDENCE_HIGH:
         status = "extracted"
     elif score >= settings.CONFIDENCE_LOW:
@@ -118,7 +107,6 @@ def compute_confidence(
     else:
         status = "needs_review"
 
-    # Any error-level flag forces needs_review
     error_flags = {"FAILED_EXTRACTION", "ANSWER_NOT_IN_OPTIONS", "MISSING_CONTINUATION"}
     if error_flags & set(flags):
         status = "needs_review"
@@ -128,7 +116,6 @@ def compute_confidence(
         status=status,
         flags=flags,
     )
-
 
 def _apply_penalty(flags: list[str], flag: str) -> None:
     """Add a flag if not already present."""

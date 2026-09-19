@@ -16,7 +16,6 @@ from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, UserR
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-
 @router.post(
     "/register",
     response_model=UserResponse,
@@ -25,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     responses={409: {"description": "Email already registered"}},
 )
 async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
-    # Check for existing email
+
     result = await db.execute(select(User).where(User.email == body.email))
     if result.scalar_one_or_none():
         raise ConflictError("Email already registered")
@@ -39,7 +38,6 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     await db.refresh(user)
     return UserResponse(id=str(user.id), email=user.email)
 
-
 @router.post(
     "/login",
     response_model=TokenResponse,
@@ -50,7 +48,6 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == body.email))
     user = result.scalar_one_or_none()
 
-    # Constant-time comparison via passlib even if user doesn't exist
     if user is None or not verify_password(body.password, user.password_hash):
         raise AppError("INVALID_CREDENTIALS", "Invalid email or password", 401)
 

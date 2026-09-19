@@ -19,10 +19,8 @@ from app.models.user import User
 
 security = HTTPBearer(auto_error=False)
 
-
-async def get_db(session: AsyncSession = Depends(get_async_session)) -> AsyncSession:  # type: ignore[misc]
+async def get_db(session: AsyncSession = Depends(get_async_session)) -> AsyncSession:
     yield session
-
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),

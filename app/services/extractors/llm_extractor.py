@@ -67,7 +67,6 @@ Return ONLY valid JSON matching this exact schema (no markdown, no explanation):
   ]
 }"""
 
-
 class LLMExtractor:
     """Production extractor using Google Gemini vision model."""
 
@@ -108,9 +107,8 @@ class LLMExtractor:
                     f"Extraction attempt {attempt + 1} failed for page {page_number}: {e}"
                 )
                 if attempt < settings.LLM_MAX_RETRIES - 1:
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2 ** attempt)
 
-        # All retries exhausted: return a failed extraction rather than crashing
         logger.error(f"All extraction attempts failed for page {page_number}: {last_error}")
         return PageExtraction(page_type="other", orientation_ok=True)
 
@@ -121,10 +119,9 @@ class LLMExtractor:
         page_number: int,
     ) -> PageExtraction:
         """Single extraction attempt."""
-        # Build content parts
+
         parts = []
 
-        # Add the prompt
         prompt = EXTRACTION_PROMPT
         if page_text:
             prompt += f"\n\n--- EXTRACTED TEXT LAYER (page {page_number}) ---\n{page_text}\n--- END TEXT LAYER ---"
@@ -132,35 +129,30 @@ class LLMExtractor:
 
         parts.append(types.Part.from_text(text=prompt))
 
-        # Add the page image
         parts.append(types.Part.from_bytes(
             data=page_image_bytes,
             mime_type="image/png",
         ))
 
-        # Call the model
         response = self._client.models.generate_content(
             model=self._model,
             contents=[types.Content(parts=parts, role="user")],
             config=types.GenerateContentConfig(
-                temperature=0.1,  # Low temperature for structured extraction
+                temperature=0.1,
                 max_output_tokens=4096,
             ),
         )
 
-        # Parse response
         response_text = response.text.strip()
 
-        # Strip markdown code fences if present
         if response_text.startswith("```"):
             lines = response_text.split("\n")
-            # Remove first and last lines (``` markers)
+
             lines = [l for l in lines if not l.strip().startswith("```")]
             response_text = "\n".join(lines)
 
         data = json.loads(response_text)
         return PageExtraction.model_validate(data)
-
 
 def get_extractor():
     """Factory: return the configured extractor instance."""

@@ -2,7 +2,6 @@
 
 from pydantic import BaseModel, EmailStr
 
-
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
@@ -11,11 +10,9 @@ class RegisterRequest(BaseModel):
         "example": {"email": "user@example.com", "password": "securepassword123"}
     }}
 
-
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -24,7 +21,6 @@ class TokenResponse(BaseModel):
     model_config = {"json_schema_extra": {
         "example": {"access_token": "eyJ...", "token_type": "bearer"}
     }}
-
 
 class UserResponse(BaseModel):
     id: str

@@ -3,7 +3,6 @@
 import pytest
 from app.services.confidence import compute_confidence
 
-
 class TestConfidenceScoring:
 
     def test_high_confidence_extracted(self):
@@ -46,7 +45,7 @@ class TestConfidenceScoring:
             question_number="1",
             question_text="What is 2+2?",
             question_type="mcq_single",
-            options=[{"label": "A", "text": "4"}],  # Only 1 option
+            options=[{"label": "A", "text": "4"}],
             has_image=False,
             has_table=False,
             existing_flags=[],
@@ -59,7 +58,7 @@ class TestConfidenceScoring:
         result = compute_confidence(
             model_confidence=0.90,
             question_number="1",
-            question_text="Q?",  # Very short
+            question_text="Q?",
             question_type="unknown",
             options=None,
             has_image=False,
@@ -81,7 +80,7 @@ class TestConfidenceScoring:
             has_table=False,
             existing_flags=[],
             answer_status="matched",
-            page_quality=0.3,  # Low quality
+            page_quality=0.3,
         )
         assert "LOW_QUALITY_BLUR" in result.flags
         assert result.confidence < 0.90
@@ -138,7 +137,6 @@ class TestConfidenceScoring:
         """Verify threshold mapping works correctly."""
         from app.core.config import settings
 
-        # Just above high threshold
         result = compute_confidence(
             model_confidence=settings.CONFIDENCE_HIGH + 0.01,
             question_number="1",

@@ -18,10 +18,8 @@ BASE_URL = os.environ.get("API_URL", "http://localhost:8000")
 OUTPUTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "outputs")
 SAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "samples")
 
-
 def ensure_dirs():
     os.makedirs(OUTPUTS_DIR, exist_ok=True)
-
 
 def save_response(name: str, response: httpx.Response) -> dict:
     """Save a response to outputs/ as JSON."""
@@ -36,7 +34,6 @@ def save_response(name: str, response: httpx.Response) -> dict:
     print(f"  Saved: {path}")
     return data
 
-
 def wait_for_processing(client: httpx.Client, doc_id: str, token: str, timeout: int = 120):
     """Poll until document is no longer processing."""
     headers = {"Authorization": f"Bearer {token}"}
@@ -50,7 +47,6 @@ def wait_for_processing(client: httpx.Client, doc_id: str, token: str, timeout: 
             return data
         time.sleep(1)
     return data
-
 
 def get_client() -> tuple[httpx.Client, bool]:
     """Return an HTTP client. If live server is running, use it; otherwise use ASGI transport."""
@@ -73,7 +69,6 @@ def get_client() -> tuple[httpx.Client, bool]:
     from app.main import app
     from app.workers.celery_app import celery_app
 
-    # Enable eager Celery execution for in-process run
     celery_app.conf.update(
         task_always_eager=True,
         broker_url="memory://",
@@ -83,7 +78,6 @@ def get_client() -> tuple[httpx.Client, bool]:
     Base.metadata.create_all(bind=sync_engine)
     from fastapi.testclient import TestClient
     return TestClient(app=app, base_url=BASE_URL), False
-
 
 def main():
     ensure_dirs()
@@ -95,7 +89,6 @@ def main():
     print(f"Mode: {'Live Network' if is_live else 'In-Process ASGI'}")
     print(f"Extractor: {extractor}\n")
 
-    # --- Scenario 1: Register + Login ---
     print("1. Register + Login")
     email = f"demo_{uuid.uuid4().hex[:6]}@example.com"
     try:
@@ -117,7 +110,6 @@ def main():
 
     headers = {"Authorization": f"Bearer {token}"}
 
-    # --- Scenario 2: Upload clean PDF ---
     print("\n2. Upload clean PDF")
     try:
         with open(os.path.join(SAMPLES_DIR, "01_clean_digital.pdf"), "rb") as f:
@@ -131,7 +123,6 @@ def main():
         doc1_id = doc1.get("id", "")
         results.append(("Upload PDF", resp.status_code == 202))
 
-        # Wait for processing
         print("  Waiting for processing...")
         final = wait_for_processing(client, doc1_id, token)
         save_response("04_pdf_processed", httpx.Response(200, json=final))
@@ -140,7 +131,6 @@ def main():
         results.append(("Upload PDF", False))
         doc1_id = ""
 
-    # --- Scenario 3: Upload PNG image ---
     print("\n3. Upload PNG image")
     try:
         with open(os.path.join(SAMPLES_DIR, "03_screenshot.png"), "rb") as f:
@@ -155,7 +145,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Upload Image", False))
 
-    # --- Scenario 4: List extracted questions ---
     print("\n4. List extracted questions")
     try:
         if doc1_id:
@@ -179,7 +168,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Question Extraction", False))
 
-    # --- Scenario 5: Answer key retrieval ---
     print("\n5. Answer key entries")
     try:
         if doc1_id:
@@ -193,7 +181,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Answer Key", False))
 
-    # --- Scenario 6: Review items ---
     print("\n6. Review items")
     try:
         if doc1_id:
@@ -207,7 +194,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Review Items", False))
 
-    # --- Scenario 7: Upload cross-page PDF ---
     print("\n7. Cross-page question")
     try:
         with open(os.path.join(SAMPLES_DIR, "04_cross_page.pdf"), "rb") as f:
@@ -230,7 +216,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Cross-page Question", False))
 
-    # --- Scenario 8: Groups + separate answer key ---
     print("\n8. Groups + separate answer key")
     try:
         resp = client.post(
@@ -278,7 +263,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Groups + Answer Key", False))
 
-    # --- Scenario 9: Invalid file rejection ---
     print("\n9. Invalid file rejection")
     try:
         with open(os.path.join(SAMPLES_DIR, "07a_fake_exe.pdf"), "rb") as f:
@@ -293,7 +277,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Invalid Upload Rejection", False))
 
-    # --- Scenario 10: Health check ---
     print("\n10. Health check")
     try:
         resp = client.get(f"{BASE_URL}/health")
@@ -303,7 +286,6 @@ def main():
         print(f"  ERROR: {e}")
         results.append(("Health Check", False))
 
-    # --- Summary ---
     print("\n=== DEMO RESULTS ===")
     for name, passed in results:
         status = "[PASS]" if passed else "[FAIL]"
@@ -315,14 +297,12 @@ def main():
     _write_demo_md(results, extractor)
     client.close()
 
-
 def _read_json(name: str) -> dict:
     path = os.path.join(OUTPUTS_DIR, f"{name}.json")
     if os.path.exists(path):
         with open(path, "r") as f:
             return json.load(f)
     return {}
-
 
 def _write_demo_md(results, extractor):
     docs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs")
@@ -357,7 +337,6 @@ def _write_demo_md(results, extractor):
 
         lines.append("\n## 2. Real API Output Samples (Extracted directly from running service)\n")
 
-        # Registration & Auth
         reg = _read_json("01_register")
         login = _read_json("02_login")
         lines.append("### A. Registration & JWT Auth")
@@ -368,14 +347,12 @@ def _write_demo_md(results, extractor):
         lines.append(f"// POST /api/v1/auth/login -> JWT Bearer Token\n{json.dumps({'token_type': login.get('token_type'), 'access_token': login.get('access_token', '')[:25] + '...'}, indent=2)}")
         lines.append("```\n")
 
-        # Document Upload & Processed Status
         proc = _read_json("04_pdf_processed")
         lines.append("### B. Asynchronous Ingestion & Document Status")
         lines.append("```json")
         lines.append(f"// GET /api/v1/documents/{{id}}\n{json.dumps(proc, indent=2)}")
         lines.append("```\n")
 
-        # Extracted Questions (Single & Stitched)
         qlist = _read_json("06_questions_list")
         items = qlist.get("items", [])
         if items:
@@ -384,7 +361,6 @@ def _write_demo_md(results, extractor):
             lines.append(f"// Sample extracted question from document (total {qlist.get('total')} questions):\n{json.dumps(items[0], indent=2)}")
             lines.append("```\n")
 
-        # Cross-page stitching evidence
         crosspage = _read_json("11_crosspage_questions")
         cp_items = crosspage.get("items", [])
         stitched_item = next((q for q in cp_items if "STITCHED_ACROSS_PAGES" in q.get("flags", [])), None)
@@ -395,14 +371,12 @@ def _write_demo_md(results, extractor):
             lines.append(json.dumps(stitched_item, indent=2))
             lines.append("```\n")
 
-        # Review items
         rev = _read_json("09_review_items")
         lines.append("### E. Review Queue (Handling Uncertainty Honestly)")
         lines.append("```json")
         lines.append(f"// GET /api/v1/documents/{{id}}/review-items\n{json.dumps(rev[:3] if isinstance(rev, list) else rev, indent=2)}")
         lines.append("```\n")
 
-        # Invalid file rejection
         rej = _read_json("17_invalid_upload")
         lines.append("### F. Strict File Validation & RFC 7807 Error Envelope")
         lines.append("```json")
@@ -419,17 +393,14 @@ def _write_demo_md(results, extractor):
 
     content = generate_content()
 
-    # Write to docs/DEMO.md
     with open(os.path.join(docs_dir, "DEMO.md"), "w", encoding="utf-8") as f:
         f.write(content)
 
-    # Write to root DEMO.md
     root_demo = os.path.join(os.path.dirname(os.path.dirname(__file__)), "DEMO.md")
     with open(root_demo, "w", encoding="utf-8") as f:
         f.write(content)
 
     print(f"\nReal demo output successfully written to DEMO.md and docs/DEMO.md")
-
 
 if __name__ == "__main__":
     main()

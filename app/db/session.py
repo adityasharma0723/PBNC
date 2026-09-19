@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 
-# Check database dialect
 is_sqlite = settings.DATABASE_URL.startswith("sqlite")
 is_sync_sqlite = settings.DATABASE_URL_SYNC.startswith("sqlite")
 
@@ -29,7 +28,6 @@ if not is_sync_sqlite:
 else:
     sync_kwargs.update({"poolclass": StaticPool, "connect_args": {"check_same_thread": False}})
 
-# Async engine for FastAPI
 async_engine = create_async_engine(
     settings.DATABASE_URL,
     **async_kwargs,
@@ -41,7 +39,6 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
-# Sync engine for Celery workers and Alembic
 try:
     sync_engine = create_engine(
         settings.DATABASE_URL_SYNC,
@@ -61,7 +58,6 @@ SyncSessionLocal = sessionmaker(
     expire_on_commit=False,
 )
 
-
-async def get_async_session() -> AsyncSession:  # type: ignore[misc]
+async def get_async_session() -> AsyncSession:
     async with AsyncSessionLocal() as session:
         yield session

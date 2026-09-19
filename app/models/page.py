@@ -12,14 +12,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
 class PageType(str, enum.Enum):
     questions = "questions"
     answer_key = "answer_key"
     mixed = "mixed"
     blank = "blank"
     other = "other"
-
 
 class Page(Base):
     __tablename__ = "pages"
@@ -44,10 +42,9 @@ class Page(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    # Relationships
     document = relationship("Document", back_populates="pages")
 
     __table_args__ = (
-        # Each page number is unique within a document
+
         {"comment": "One rendered page per document"},
     )
