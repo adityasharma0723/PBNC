@@ -1,8 +1,8 @@
 {
   "items": [
     {
-      "id": "82b2dd4e-218c-4b00-b4fe-28e6d01e6e37",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "2f0a110f-5298-49b8-a812-99b80f8e7ede",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "1",
       "question_text": "What is the capital of Country 1?",
@@ -32,7 +32,7 @@
       ],
       "answer": {
         "value": "A",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -41,11 +41,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.144618"
+      "created_at": "2026-09-19T17:20:23.664821"
     },
     {
-      "id": "8ac38185-c9a8-4000-af2a-8da1f3388ecc",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "ea7a2412-9b16-4277-b203-852640c9dcc6",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "2",
       "question_text": "What is the capital of Country 2?",
@@ -75,7 +75,7 @@
       ],
       "answer": {
         "value": "B",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -84,11 +84,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.147154"
+      "created_at": "2026-09-19T17:20:23.668870"
     },
     {
-      "id": "d60d7cee-c9fd-4fa7-8d3d-d44a901acd02",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "9ebf8b4c-6aee-4fd1-83da-5bbf9d2348c3",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "3",
       "question_text": "What is the capital of Country 3?",
@@ -118,7 +118,7 @@
       ],
       "answer": {
         "value": "C",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -127,11 +127,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.147555"
+      "created_at": "2026-09-19T17:20:23.669564"
     },
     {
-      "id": "6bc3a95f-c25e-4ef0-801c-59521d6f1e0b",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "809c1ad8-9cf1-4459-8db1-f5e9cb1a1bd9",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "4",
       "question_text": "What is the capital of Country 4?",
@@ -161,7 +161,7 @@
       ],
       "answer": {
         "value": "D",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -170,11 +170,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.147839"
+      "created_at": "2026-09-19T17:20:23.670267"
     },
     {
-      "id": "107bfa2f-1074-4570-863f-0dab1ffa21c9",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "8d56e090-fddf-4ed0-8a03-97e6ba925737",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "5",
       "question_text": "What is the capital of Country 5? ...which was established in the year 1900 + 6?",
@@ -221,7 +221,7 @@
       ],
       "answer": {
         "value": "A",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -233,11 +233,11 @@
         "BAD_OPTION_COUNT"
       ],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.148084"
+      "created_at": "2026-09-19T17:20:23.671068"
     },
     {
-      "id": "bac26852-19c3-4fab-9a12-9de6cd77715d",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "ba4090e3-53e2-4d7e-ae13-8424edffb701",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "7",
       "question_text": "What is the capital of Country 7?",
@@ -267,7 +267,7 @@
       ],
       "answer": {
         "value": "C",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -278,11 +278,11 @@
         "HAS_UNCAPTURED_IMAGE"
       ],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.148388"
+      "created_at": "2026-09-19T17:20:23.671833"
     },
     {
-      "id": "fd7c1876-71d3-40b7-84b6-ef7c91fbfb77",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "feecf8f5-7b08-4555-a06e-f39b86287190",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "8",
       "question_text": "What is the capital of Country 8?",
@@ -312,7 +312,7 @@
       ],
       "answer": {
         "value": "D",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -321,11 +321,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.148656"
+      "created_at": "2026-09-19T17:20:23.672570"
     },
     {
-      "id": "7bf6962c-c336-435f-b99d-5e9d0083613a",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "7b552288-5e62-4bc5-87e2-63225e1d5932",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "9",
       "question_text": "What is the capital of Country 9?",
@@ -355,7 +355,7 @@
       ],
       "answer": {
         "value": "A",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -364,11 +364,11 @@
       "status": "extracted",
       "flags": [],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.148903"
+      "created_at": "2026-09-19T17:20:23.673339"
     },
     {
-      "id": "5391f1f6-0988-4162-8fbe-7d11f4c4e06c",
-      "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+      "id": "1e81ead1-b998-4d30-8aae-a8d85a484295",
+      "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
       "group_id": null,
       "question_number": "10",
       "question_text": "What is the capital of Country 10?",
@@ -398,7 +398,7 @@
       ],
       "answer": {
         "value": "B",
-        "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+        "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
         "source_page": 3,
         "match_method": "normalized_number"
       },
@@ -409,7 +409,7 @@
         "MISSING_CONTINUATION"
       ],
       "reviewed": false,
-      "created_at": "2026-09-19T16:56:35.149154"
+      "created_at": "2026-09-19T17:20:23.674051"
     }
   ],
   "total": 9

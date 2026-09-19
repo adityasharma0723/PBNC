@@ -1,6 +1,6 @@
 {
-  "id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
-  "group_id": "3128bf21-275c-4187-b18c-62e20848fcca",
+  "id": "bceb8155-a6f3-4e75-a472-e1b0df96675a",
+  "group_id": "4566aee5-3957-4b2a-9522-ded4afa10510",
   "role": "question_paper",
   "original_filename": "04_cross_page.pdf",
   "mime_type": "application/pdf",
@@ -9,6 +9,6 @@
   "status": "completed_with_warnings",
   "progress_pct": 100,
   "error_message": null,
-  "created_at": "2026-09-19T16:56:35.411534",
-  "updated_at": "2026-09-19T16:56:36.583198"
+  "created_at": "2026-09-19T17:20:24.402006",
+  "updated_at": "2026-09-19T17:20:26.921667"
 }

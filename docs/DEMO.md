@@ -25,8 +25,8 @@
 ```json
 // POST /api/v1/auth/register
 {
-  "id": "e07edfbb-32c0-4d18-8107-9ad2f05cf551",
-  "email": "demo_ec3f61@example.com"
+  "id": "f50b9566-5d98-42fb-8fa1-ae8eb844e37f",
+  "email": "demo_30ec79@example.com"
 }
 ```
 ```json
@@ -41,7 +41,7 @@
 ```json
 // GET /api/v1/documents/{id}
 {
-  "id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+  "id": "594aa56b-dee8-49e9-9686-0600d15226e0",
   "group_id": null,
   "role": "mixed",
   "original_filename": "01_clean_digital.pdf",
@@ -51,8 +51,8 @@
   "status": "completed_with_warnings",
   "progress_pct": 100,
   "error_message": null,
-  "created_at": "2026-09-19T16:56:33.203303",
-  "updated_at": "2026-09-19T16:56:35.172950"
+  "created_at": "2026-09-19T17:20:19.243664",
+  "updated_at": "2026-09-19T17:20:23.717724"
 }
 ```
 
@@ -60,8 +60,8 @@
 ```json
 // Sample extracted question from document (total 9 questions):
 {
-  "id": "82b2dd4e-218c-4b00-b4fe-28e6d01e6e37",
-  "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+  "id": "2f0a110f-5298-49b8-a812-99b80f8e7ede",
+  "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
   "group_id": null,
   "question_number": "1",
   "question_text": "What is the capital of Country 1?",
@@ -91,7 +91,7 @@
   ],
   "answer": {
     "value": "A",
-    "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "source_document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
     "source_page": 3,
     "match_method": "normalized_number"
   },
@@ -100,7 +100,7 @@
   "status": "extracted",
   "flags": [],
   "reviewed": false,
-  "created_at": "2026-09-19T16:56:35.144618"
+  "created_at": "2026-09-19T17:20:23.664821"
 }
 ```
 
@@ -108,8 +108,8 @@
 Question spans pages: `[1, 2]` with flags `['STITCHED_ACROSS_PAGES', 'BAD_OPTION_COUNT']`:
 ```json
 {
-  "id": "7c9854d8-2ce9-48a6-9e6c-886c5ede6773",
-  "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+  "id": "3a40d909-28f4-4923-82aa-ece854a779bd",
+  "document_id": "bceb8155-a6f3-4e75-a472-e1b0df96675a",
   "group_id": null,
   "question_number": "5",
   "question_text": "What is the capital of Country 5? ...which was established in the year 1900 + 6?",
@@ -163,7 +163,7 @@ Question spans pages: `[1, 2]` with flags `['STITCHED_ACROSS_PAGES', 'BAD_OPTION
     "BAD_OPTION_COUNT"
   ],
   "reviewed": false,
-  "created_at": "2026-09-19T16:56:36.512066"
+  "created_at": "2026-09-19T17:20:26.783948"
 }
 ```
 
@@ -172,37 +172,37 @@ Question spans pages: `[1, 2]` with flags `['STITCHED_ACROSS_PAGES', 'BAD_OPTION
 // GET /api/v1/documents/{id}/review-items
 [
   {
-    "id": "87d65be4-0cf1-4745-b00a-bf37bda9c1db",
-    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "id": "69b411ca-2f8d-4682-9da3-2f19f33b87e6",
+    "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
     "question_id": null,
     "severity": "info",
     "code": "UNMATCHED_ANSWER_KEY",
     "message": "Answer key entry '6=B' has no matching question",
     "page_number": 3,
     "resolved": false,
-    "created_at": "2026-09-19T16:56:35.171720"
+    "created_at": "2026-09-19T17:20:23.715086"
   },
   {
-    "id": "97635dd1-96cf-4aab-9b8e-3b7b4a836abe",
-    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "id": "f5b5c657-93b7-4539-b45f-1224a545c164",
+    "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
     "question_id": null,
     "severity": "info",
     "code": "UNMATCHED_ANSWER_KEY",
     "message": "Answer key entry '99=C' has no matching question",
     "page_number": 3,
     "resolved": false,
-    "created_at": "2026-09-19T16:56:35.171724"
+    "created_at": "2026-09-19T17:20:23.715101"
   },
   {
-    "id": "bbc1836a-4c27-4ce7-9a80-c75f3a398029",
-    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
-    "question_id": "5391f1f6-0988-4162-8fbe-7d11f4c4e06c",
+    "id": "71ce9d43-b222-4f9a-9c0c-0dfde4ed4a5e",
+    "document_id": "594aa56b-dee8-49e9-9686-0600d15226e0",
+    "question_id": "1e81ead1-b998-4d30-8aae-a8d85a484295",
     "severity": "warning",
     "code": "LOW_CONFIDENCE",
     "message": "Question 10: confidence 0.80, flags: MISSING_CONTINUATION",
     "page_number": 2,
     "resolved": false,
-    "created_at": "2026-09-19T16:56:35.171726"
+    "created_at": "2026-09-19T17:20:23.715109"
   }
 ]
 ```

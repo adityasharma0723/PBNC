@@ -34,6 +34,10 @@ setup_logging(settings.DEBUG)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown lifecycle."""
+    if settings.DATABASE_URL.startswith("sqlite"):
+        from app.db.base import Base
+        async with async_engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
     yield
     await async_engine.dispose()
 

@@ -42,10 +42,18 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 # Sync engine for Celery workers and Alembic
-sync_engine = create_engine(
-    settings.DATABASE_URL_SYNC,
-    **sync_kwargs,
-)
+try:
+    sync_engine = create_engine(
+        settings.DATABASE_URL_SYNC,
+        **sync_kwargs,
+    )
+    _ = sync_engine.dialect
+except Exception:
+    sync_engine = create_engine(
+        "sqlite:///docintel.db",
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
 
 SyncSessionLocal = sessionmaker(
     sync_engine,
