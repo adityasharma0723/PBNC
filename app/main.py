@@ -55,11 +55,45 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+from fastapi.openapi.utils import get_openapi
+
 # --- Exception handlers (order matters: most specific first) ---
 app.add_exception_handler(AppError, app_error_handler)  # type: ignore[arg-type]
 app.add_exception_handler(RequestValidationError, validation_exception_handler)  # type: ignore[arg-type]
 app.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore[arg-type]
 app.add_exception_handler(Exception, unhandled_exception_handler)
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    if "components" in schema and "schemas" in schema["components"]:
+        schema["components"]["schemas"]["HTTPValidationError"] = {
+            "title": "HTTPValidationError",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {"type": "string", "example": "VALIDATION_ERROR"},
+                        "message": {"type": "string", "example": "Request validation failed"},
+                        "details": {"type": "array", "items": {"type": "object"}},
+                    },
+                    "required": ["code", "message"],
+                }
+            },
+        }
+    app.openapi_schema = schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 # --- Routers ---
 app.include_router(auth_router, prefix="/api/v1")
