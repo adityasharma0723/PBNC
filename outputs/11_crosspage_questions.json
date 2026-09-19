@@ -1,0 +1,371 @@
+{
+  "items": [
+    {
+      "id": "93687f40-7c6b-4d9e-918c-31dd8e1dc8d5",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "1",
+      "question_text": "What is the capital of Country 1?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 1"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 1"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 1"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 1"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        1
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.507803"
+    },
+    {
+      "id": "c3fab89e-a8ac-48e6-9c22-1594532dca54",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "2",
+      "question_text": "What is the capital of Country 2?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 2"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 2"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 2"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 2"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        1
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.510675"
+    },
+    {
+      "id": "018a672c-21dc-4dc1-b700-90477372222c",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "3",
+      "question_text": "What is the capital of Country 3?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 3"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 3"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 3"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 3"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        1
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.511454"
+    },
+    {
+      "id": "15c6ba64-0ec9-4888-ac87-428e29022415",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "4",
+      "question_text": "What is the capital of Country 4?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 4"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 4"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 4"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 4"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        1
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.511805"
+    },
+    {
+      "id": "7c9854d8-2ce9-48a6-9e6c-886c5ede6773",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "5",
+      "question_text": "What is the capital of Country 5? ...which was established in the year 1900 + 6?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 5"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 5"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 5"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 5"
+        },
+        {
+          "label": "A",
+          "text": "City Alpha 6"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 6"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 6"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 6"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        1,
+        2
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.5,
+      "status": "partial",
+      "flags": [
+        "STITCHED_ACROSS_PAGES",
+        "BAD_OPTION_COUNT"
+      ],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.512066"
+    },
+    {
+      "id": "f66cf16d-908d-4ad3-a605-4fe1a8a5237e",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "7",
+      "question_text": "What is the capital of Country 7?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 7"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 7"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 7"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 7"
+        }
+      ],
+      "has_image": true,
+      "has_table": false,
+      "source_pages": [
+        2
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.89,
+      "status": "extracted",
+      "flags": [
+        "HAS_UNCAPTURED_IMAGE"
+      ],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.512308"
+    },
+    {
+      "id": "1b5aec06-1991-4fc0-94fd-cbf76cc07f50",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "8",
+      "question_text": "What is the capital of Country 8?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 8"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 8"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 8"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 8"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        2
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.512535"
+    },
+    {
+      "id": "6a14cced-4383-4b12-9385-361f9aefc567",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "9",
+      "question_text": "What is the capital of Country 9?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 9"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 9"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 9"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 9"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        2
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.92,
+      "status": "extracted",
+      "flags": [],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.512767"
+    },
+    {
+      "id": "92769047-8e04-4fb7-b78c-29396e219c24",
+      "document_id": "22c872ff-625a-4bc2-911d-760ffb2ac157",
+      "group_id": null,
+      "question_number": "10",
+      "question_text": "What is the capital of Country 10?",
+      "question_type": "mcq_single",
+      "options": [
+        {
+          "label": "A",
+          "text": "City Alpha 10"
+        },
+        {
+          "label": "B",
+          "text": "City Beta 10"
+        },
+        {
+          "label": "C",
+          "text": "City Gamma 10"
+        },
+        {
+          "label": "D",
+          "text": "City Delta 10"
+        }
+      ],
+      "has_image": false,
+      "has_table": false,
+      "source_pages": [
+        2
+      ],
+      "answer": null,
+      "answer_status": "not_found",
+      "confidence": 0.8,
+      "status": "needs_review",
+      "flags": [
+        "MISSING_CONTINUATION"
+      ],
+      "reviewed": false,
+      "created_at": "2026-09-19T16:56:36.513021"
+    }
+  ],
+  "total": 9
+}

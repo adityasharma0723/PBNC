@@ -1,0 +1,43 @@
+{
+  "id": "82b2dd4e-218c-4b00-b4fe-28e6d01e6e37",
+  "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+  "group_id": null,
+  "question_number": "1",
+  "question_text": "What is the capital of Country 1?",
+  "question_type": "mcq_single",
+  "options": [
+    {
+      "label": "A",
+      "text": "City Alpha 1"
+    },
+    {
+      "label": "B",
+      "text": "City Beta 1"
+    },
+    {
+      "label": "C",
+      "text": "City Gamma 1"
+    },
+    {
+      "label": "D",
+      "text": "City Delta 1"
+    }
+  ],
+  "has_image": false,
+  "has_table": false,
+  "source_pages": [
+    1
+  ],
+  "answer": {
+    "value": "A",
+    "source_document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "source_page": 3,
+    "match_method": "normalized_number"
+  },
+  "answer_status": "matched",
+  "confidence": 0.92,
+  "status": "extracted",
+  "flags": [],
+  "reviewed": false,
+  "created_at": "2026-09-19T16:56:35.144618"
+}

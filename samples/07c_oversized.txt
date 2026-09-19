@@ -1,0 +1,1 @@
+This file simulates an oversized upload. Actual test sets MAX_UPLOAD_SIZE_MB=0.

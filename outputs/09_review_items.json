@@ -1,0 +1,35 @@
+[
+  {
+    "id": "87d65be4-0cf1-4745-b00a-bf37bda9c1db",
+    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "question_id": null,
+    "severity": "info",
+    "code": "UNMATCHED_ANSWER_KEY",
+    "message": "Answer key entry '6=B' has no matching question",
+    "page_number": 3,
+    "resolved": false,
+    "created_at": "2026-09-19T16:56:35.171720"
+  },
+  {
+    "id": "97635dd1-96cf-4aab-9b8e-3b7b4a836abe",
+    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "question_id": null,
+    "severity": "info",
+    "code": "UNMATCHED_ANSWER_KEY",
+    "message": "Answer key entry '99=C' has no matching question",
+    "page_number": 3,
+    "resolved": false,
+    "created_at": "2026-09-19T16:56:35.171724"
+  },
+  {
+    "id": "bbc1836a-4c27-4ce7-9a80-c75f3a398029",
+    "document_id": "aaa07c8b-e42e-495f-89c6-eb92e5123813",
+    "question_id": "5391f1f6-0988-4162-8fbe-7d11f4c4e06c",
+    "severity": "warning",
+    "code": "LOW_CONFIDENCE",
+    "message": "Question 10: confidence 0.80, flags: MISSING_CONTINUATION",
+    "page_number": 2,
+    "resolved": false,
+    "created_at": "2026-09-19T16:56:35.171726"
+  }
+]
