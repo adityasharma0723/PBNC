@@ -81,7 +81,7 @@ async def upload_document(
             )
         )
         if not result.scalar_one_or_none():
-            raise NotFoundError("Group")
+            group_id = None
 
     extension = get_extension_for_mime(validation.mime_type)
     stored_path, sha256 = store_file(file_bytes, extension)

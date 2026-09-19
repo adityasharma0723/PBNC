@@ -46,10 +46,19 @@ app = FastAPI(
         "answers and confidence scores. Uses a vision-capable LLM (Gemini) "
         "for extraction. See /docs for full API reference."
     ),
-    version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
+)
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 from fastapi.openapi.utils import get_openapi

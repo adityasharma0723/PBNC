@@ -4,6 +4,11 @@ services:
     ports:
       - "8000:8000"
     env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://docintel:docintel@db:5432/docintel
+      - DATABASE_URL_SYNC=postgresql://docintel:docintel@db:5432/docintel
+      - REDIS_URL=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -17,6 +22,11 @@ services:
   worker:
     build: .
     env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://docintel:docintel@db:5432/docintel
+      - DATABASE_URL_SYNC=postgresql://docintel:docintel@db:5432/docintel
+      - REDIS_URL=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
     depends_on:
       db:
         condition: service_healthy
